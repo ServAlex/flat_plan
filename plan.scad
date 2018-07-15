@@ -59,20 +59,24 @@ kitchenDoorOffset = 300;
 
 balconyDoorWidth = 800;		// TODO: check this value;
 balconyWindowWidth = 790;	// TODO: check this value;
-balconyFenceHeight = 700;
 
 entrenceDoorWidth = 1000;	// TODO: check this value;
 entrenceDoorBathroomOffset = 100;	// TODO: check this value;
 
 
 mode = "all";
+balconyFenceHeight = 700;
+
 //mode = "crossection";
+//balconyFenceHeight = 2500;
+
 
 if(mode == "all")
+{
 	all_the_walls();
+}
 else if(mode == "crossection")
 {
-	balconyFenceHeight = 900;
 	translate([0, 0, -windowBottomOffset -100])
 	crossection();
 }
