@@ -59,92 +59,121 @@ kitchenDoorOffset = 300;
 
 balconyDoorWidth = 800;		// TODO: check this value;
 balconyWindowWidth = 790;	// TODO: check this value;
+balconyFenceHeight = 700;
 
 entrenceDoorWidth = 1000;	// TODO: check this value;
 entrenceDoorBathroomOffset = 100;	// TODO: check this value;
 
 
-difference()
+mode = "all";
+//mode = "crossection";
+
+if(mode == "all")
+	all_the_walls();
+else if(mode == "crossection")
 {
-	union()
-	{
-		// main body
-		cube([wallMedium + innerTotalWidth+wallMedium, wallThick + innerTotalHeight + wallMedium, innerTotalThickness]);
+	balconyFenceHeight = 900;
+	translate([0, 0, -windowBottomOffset -100])
+	crossection();
+}
 
-		// balcony
-		// TODO: check if balcony walls are this thick
-		translate([balconyPosition - wallThin, wallMedium + innerTotalHeight + wallThick, 0])
-		cube([balconyWidth + wallThin*2, balconyHeight + wallThin, 700]);
+module crossection()
+{
+	difference()
+	{
+		all_the_walls();
+
+		translate([-10, -10, -50])
+		cube([100000, 100000, windowBottomOffset + 100]);
+		translate([-10, -10, windowBottomOffset + 100])
+		cube([100000, 100000, 10000]);
 	}
+}
 
-	// cavities
-	union()
+module all_the_walls()
+{
+	difference()
 	{
-		// left room
-		translate([wallMedium, wallMedium, -1])
-		cube([leftRoomWidth, leftRoomHeight, innerTotalThickness+2]);
+		union()
+		{
+			// main body
+			cube([wallMedium + innerTotalWidth+wallMedium, wallThick + innerTotalHeight + wallMedium, innerTotalThickness]);
 
-		// coridor in 2 parts
-		// leading to left room
-		translate([wallMedium + leftRoomWidth + wallMedium, wallMedium, -1])
-		cube([coridorWidth_1+1, coridorHeight_1, innerTotalThickness+2]);
+			// balcony
+			// TODO: check if balcony walls are this thick
+			translate([balconyPosition - wallThin, wallMedium + innerTotalHeight + wallThick, 0])
+			cube([balconyWidth + wallThin*2, balconyHeight + wallThin, balconyFenceHeight]);
+		}
 
-		// leading to kitchen
-		translate([wallMedium + leftRoomWidth + wallMedium + coridorWidth_1, wallMedium, -1])
-		cube([coridorWidth_2, coridorHeight_2, innerTotalThickness+2]);
+		// cavities
+		union()
+		{
+			// left room
+			translate([wallMedium, wallMedium, -1])
+			cube([leftRoomWidth, leftRoomHeight, innerTotalThickness+2]);
 
-		// bathroom
-		translate([wallMedium + leftRoomWidth + wallMedium + coridorWidth_1 + coridorWidth_2 + wallThin, wallMedium, -1])
-		cube([bathroomWidth, bathroomHeight, innerTotalThickness+2]);
+			// coridor in 2 parts
+			// leading to left room
+			translate([wallMedium + leftRoomWidth + wallMedium, wallMedium, -1])
+			cube([coridorWidth_1+1, coridorHeight_1, innerTotalThickness+2]);
 
-		// middle room
-		translate([wallMedium + leftRoomWidth + wallMedium, wallMedium + coridorHeight_1 + wallThin, -1])
-		cube([middleRoomWidth, middleRoomHeight, innerTotalThickness+2]);
+			// leading to kitchen
+			translate([wallMedium + leftRoomWidth + wallMedium + coridorWidth_1, wallMedium, -1])
+			cube([coridorWidth_2, coridorHeight_2, innerTotalThickness+2]);
 
-		// kitchen: entrence part
-		translate([wallMedium + leftRoomWidth + wallMedium + coridorWidth_1, wallMedium + coridorHeight_2 + wallThin, -1])
-		cube([kitchenCoridorWidth, kitchenCoridorHeight + 1, innerTotalThickness+2]);
+			// bathroom
+			translate([wallMedium + leftRoomWidth + wallMedium + coridorWidth_1 + coridorWidth_2 + wallThin, wallMedium, -1])
+			cube([bathroomWidth, bathroomHeight, innerTotalThickness+2]);
 
-		// kitchen: main part
-		translate([wallMedium + leftRoomWidth + wallMedium + coridorWidth_1, wallMedium + coridorHeight_2 + wallThin + kitchenCoridorHeight, -1])
-		cube([kitchenWidth, kitchenHeight, innerTotalThickness+2]);
+			// middle room
+			translate([wallMedium + leftRoomWidth + wallMedium, wallMedium + coridorHeight_1 + wallThin, -1])
+			cube([middleRoomWidth, middleRoomHeight, innerTotalThickness+2]);
 
-		// balcony
-		translate([balconyPosition, wallMedium + innerTotalHeight + wallThick - 1, -1])
-		cube([balconyWidth, balconyHeight, innerTotalThickness+2]);
+			// kitchen: entrence part
+			translate([wallMedium + leftRoomWidth + wallMedium + coridorWidth_1, wallMedium + coridorHeight_2 + wallThin, -1])
+			cube([kitchenCoridorWidth, kitchenCoridorHeight + 1, innerTotalThickness+2]);
 
-		// windows and doorways
-		// left room door
-		translate([wallMedium + leftRoomWidth - 1, wallMedium + leftRoomDoorOffset, -1])
-		cube([wallMedium + 2, leftRoomDoorWidth, doorsThickness + 1]);
-		// window
-		translate([wallMedium + leftWindowOffset, wallMedium + leftRoomHeight - 1, windowBottomOffset])
-		cube([windowWidth, wallThick+2, windowThickness]);
+			// kitchen: main part
+			translate([wallMedium + leftRoomWidth + wallMedium + coridorWidth_1, wallMedium + coridorHeight_2 + wallThin + kitchenCoridorHeight, -1])
+			cube([kitchenWidth, kitchenHeight, innerTotalThickness+2]);
 
-		// middle room door
-		translate([wallMedium + leftRoomWidth + wallMedium + middleRoomWidth - middleRoomDoorWidth - middleRoomDoorOffset, wallMedium + coridorHeight_1 - 1, -1])
-		cube([middleRoomDoorWidth, wallThin + 2, doorsThickness + 1]);
-		// window
-		translate([wallMedium + leftRoomWidth + wallMedium + middleWindowOffset, wallMedium + leftRoomHeight - 1, windowBottomOffset])
-		cube([windowWidth, wallThick+2, windowThickness]);
+			// balcony
+			translate([balconyPosition, wallMedium + innerTotalHeight + wallThick - 1, -1])
+			cube([balconyWidth, balconyHeight, innerTotalThickness+2]);
 
-		// kitchen door
-		translate([wallMedium + leftRoomWidth + wallMedium + coridorWidth_1 + kitchenDoorOffset, wallMedium + coridorHeight_2 - 1, -1])
-		cube([kitchenDoorWidth, wallThin + 2, doorsThickness + 1]);
+			// windows and doorways
+			// left room door
+			translate([wallMedium + leftRoomWidth - 1, wallMedium + leftRoomDoorOffset, -1])
+			cube([wallMedium + 2, leftRoomDoorWidth, doorsThickness + 1]);
+			// window
+			translate([wallMedium + leftWindowOffset, wallMedium + leftRoomHeight - 1, windowBottomOffset])
+			cube([windowWidth, wallThick+2, windowThickness]);
 
-		// entrence door
-		translate([wallMedium + leftRoomWidth + wallMedium + coridorWidth_1 + coridorWidth_2 - entrenceDoorWidth - entrenceDoorBathroomOffset, -1, -1])
-		cube([entrenceDoorWidth, wallMedium + 2, doorsThickness + 1]);
+			// middle room door
+			translate([wallMedium + leftRoomWidth + wallMedium + middleRoomWidth - middleRoomDoorWidth - middleRoomDoorOffset, wallMedium + coridorHeight_1 - 1, -1])
+			cube([middleRoomDoorWidth, wallThin + 2, doorsThickness + 1]);
+			// window
+			translate([wallMedium + leftRoomWidth + wallMedium + middleWindowOffset, wallMedium + leftRoomHeight - 1, windowBottomOffset])
+			cube([windowWidth, wallThick+2, windowThickness]);
 
-		// bathroom door
-		translate([wallMedium + leftRoomWidth + wallMedium + coridorWidth_1 + coridorWidth_2 -1, wallMedium + bathroomDoorOffset, -1])
-		cube([wallThin + 2, bathroomDoorWidth, doorsThickness + 1]);
+			// kitchen door
+			translate([wallMedium + leftRoomWidth + wallMedium + coridorWidth_1 + kitchenDoorOffset, wallMedium + coridorHeight_2 - 1, -1])
+			cube([kitchenDoorWidth, wallThin + 2, doorsThickness + 1]);
 
-		// balcony door
-		translate([balconyDoorPosition, wallMedium + leftRoomHeight -7, -1])	// TODO: check placement and size, wher did we get 7mm offset? wrong kitchen placement?
-		cube([balconyDoorWidth, wallThick+2+7, doorsThickness + 1]);
-		// window
-		translate([balconyDoorPosition+balconyDoorWidth-1, wallMedium + leftRoomHeight -7, windowBottomOffset])	// TODO: check placement and size, wher did we get 7mm offset? wrong kitchen placement?
-		cube([balconyWindowWidth+1, wallThick+2+7, windowThickness]);
+			// entrence door
+			translate([wallMedium + leftRoomWidth + wallMedium + coridorWidth_1 + coridorWidth_2 - entrenceDoorWidth - entrenceDoorBathroomOffset, -1, -1])
+			cube([entrenceDoorWidth, wallMedium + 2, doorsThickness + 1]);
+
+			// bathroom door
+			translate([wallMedium + leftRoomWidth + wallMedium + coridorWidth_1 + coridorWidth_2 -1, wallMedium + bathroomDoorOffset, -1])
+			cube([wallThin + 2, bathroomDoorWidth, doorsThickness + 1]);
+
+			// balcony door
+			translate([balconyDoorPosition, wallMedium + leftRoomHeight -7, -1])	// TODO: check placement and size, wher did we get 7mm offset? wrong kitchen placement?
+			cube([balconyDoorWidth, wallThick+2+7, doorsThickness + 1]);
+			// window
+			translate([balconyDoorPosition+balconyDoorWidth-1, wallMedium + leftRoomHeight -7, windowBottomOffset])	// TODO: check placement and size, wher did we get 7mm offset? wrong kitchen placement?
+			cube([balconyWindowWidth+1, wallThick+2+7, windowThickness]);
+		}
 	}
 }
